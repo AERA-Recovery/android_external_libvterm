@@ -1,0 +1,54 @@
+// Soong build for libvterm, used by OrangeFox Recovery's in-UI terminal
+// (gui/terminal.cpp). libvterm is the terminal state-machine / screen model;
+// the recovery GUI feeds PTY bytes in and renders the resulting cell grid.
+//
+// The pre-generated encoding tables (src/encoding/*.inc, src/fullwidth.inc) are
+// committed upstream, so no perl/codegen step is required to build here.
+
+package {
+    default_applicable_licenses: ["external_libvterm_license"],
+}
+
+license {
+    name: "external_libvterm_license",
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-MIT"],
+    license_text: ["LICENSE"],
+}
+
+cc_library_static {
+    name: "libvterm",
+    recovery_available: true,
+
+    srcs: [
+        "src/encoding.c",
+        "src/keyboard.c",
+        "src/mouse.c",
+        "src/parser.c",
+        "src/pen.c",
+        "src/screen.c",
+        "src/state.c",
+        "src/unicode.c",
+        "src/vterm.c",
+    ],
+
+    local_include_dirs: [
+        "include",
+        "src",
+    ],
+
+    export_include_dirs: [
+        "include",
+    ],
+
+    c_std: "c99",
+
+    cflags: [
+        "-D_GNU_SOURCE",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-missing-field-initializers",
+        "-Wno-unused-function",
+        "-Wno-unused-variable",
+    ],
+}
